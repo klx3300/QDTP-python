@@ -34,11 +34,11 @@ def communicate_get(psk, filedesc, serveraddr):
 
 def communicate_set(psk, filedesc, serveraddr):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.connect((severaddr,4582))
+    sock.connect((serveraddr,4582))
     # auth
     sock.send(psk)
     repstr = sock.recv(1024)
-    if repstr[:3]!="808":
+    if repstr[:3]!="080":
         #cond not succ
         print(repstr)
         sock.close()
