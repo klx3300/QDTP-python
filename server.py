@@ -5,32 +5,33 @@ import threading
 
 
 def cli_conn_thread(sock, addr):
-    print("New Connection Accepted from client addr:" + addr)
+    print("New Connection Accepted from client addr:" , addr)
     # auth
     cli_psk = sock.recv(1024)
-    with open("server_psk.psk", "r") as pskf:
+    with open("server_psk.psk", "rb") as pskf:
         srv_psk = pskf.read()
     if cli_psk != srv_psk:
-        sock.send("044 Auth fail.")
+        print(srv_psk,cli_psk)
+        sock.send(b"044 Auth fail.")
         sock.close()
         return
     else:
-        sock.send("080 Auth succ.")
+        sock.send(b"080 Auth succ.")
     # receive operation value
     operation = sock.recv(1);
     if not (operation):
-        print("Fatal Exception on sock.recv() . Stop.")
+        print(b"Fatal Exception on sock.recv() . Stop.")
         return
-    if operation == 'G':
+    if operation == b'G':
         # receive filename
         filename = sock.recv(1024)
         # open file descor
         filedesc = open(filename, "rb")
         if not filedesc:
-            sock.send("127 File not found.")
+            sock.send(b"127 File not found.")
             sock.close()
             return
-        sock.send("080 OK")
+        sock.send(b"080 OK")
         rbuffer = filedesc.read(256)
         while rbuffer:
             sock.send(rbuffer)
@@ -39,7 +40,7 @@ def cli_conn_thread(sock, addr):
         # close connection
         filedesc.close()
         sock.close()
-    elif operation == "S":
+    elif operation == b"S":
         # receive file name
         filename = sock.recv(1024)
         # server ACK.
@@ -47,18 +48,21 @@ def cli_conn_thread(sock, addr):
 
         filedesc = open(filename, "wb")
         if not filedesc:
-            sock.send("290 Filesystem corruption or system resource fail.")
+            sock.send(b"290 Filesystem corruption or system resource fail.")
             sock.close()
             return
-        sock.send("080 OK")
+        sock.send(b"080 OK")
         wbuffer = sock.recv(256)
         while wbuffer:
             filedesc.write(wbuffer)
-            wbuffer = sock.recv(256)
+            try:
+                wbuffer = sock.recv(256)
+            except BaseException as e:
+                wbuffer = None
         filedesc.close()
         sock.close()
     else:
-        sock.send("71 ERROR. Unresolvable cli request")
+        sock.send(b"71 ERROR. Unresolvable cli request")
         sock.close()
 
 
