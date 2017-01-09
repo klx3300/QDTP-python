@@ -3,7 +3,7 @@
 import socket
 
 
-# these functions will not close file descriptor for you!
+# these functions will not close file for you!
 
 def communicate_get(psk, filename, filedesc, serveraddr):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -62,10 +62,3 @@ def communicate_set(psk, filename, filedesc, serveraddr):
         sock.send(rbuffer)
         rbuffer = filedesc.read(256)
     sock.close()
-
-# test send
-fd = open("../testback","wb")
-with open("server_psk.psk","rb") as spsk:
-    test_psk=spsk.read()
-communicate_get(test_psk,b'testfile',fd,"127.0.0.1")
-fd.close()

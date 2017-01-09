@@ -1,53 +1,24 @@
 # QDTP-python
 qDataTransportationProtocol(python implementation)
 
+## Version Number
+
+v1
+
 ## Notice
 
 ### Network
+
 Server runs on port 4582
 
-### Drawbacks
+### Working In Progress...
 
-No strict data correction check.
+This is the first version of qDTP.
 
-Creating folders not supported.
+In fact, it's far from complete. Many necessary features are still not implemented.
 
-and *so many* features still not supported ...
+But it does do the simplest work - send file to remote and fetch file from remote.
 
-### Communication Stream
+So, I'd mark the first version here, although I *WILL NOT* implement a full client for it.
 
-C:Ask TCP connection
-
-S:Receive TCP connection & waits for authentication information
-
-C:Send Authentication string & waits for server result message.
-
-S:Check Authentication string with local version.
-
-S:On Success,return "Auth succ." On fail,return "Auth fail."
-
-C:Send operation code.
-
-[on operation get(code G)]
-
-C:Send filename & Wait for server result return.
-
-S:Try to open specified file.
-
-S:Success "080 OK" fail "127 File not found."
-
-S: Send file data with 256 bytes each.
-
-S: Close connection.
-
-[on operation set(code S)]
-
-C:Send filename & wait for server result return.
-
-S:Try to open specified file.
-
-S:Success "080 OK" fail "290 Filesystem corruption or system resource fail."
-
-C:Send file data with 256 bytes each.
-
-C:Close connection.
+Codes in *client.py* are just functions. It can't run without further implementation.
